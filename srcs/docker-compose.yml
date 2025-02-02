@@ -1,14 +1,4 @@
 services:
-  # nginx:
-  #   build:
-  #     context: ./requirements/nginx
-  #   ports:
-  #     - "5000:8080"
-  #   env_file:
-  #     - .env
-#     depends_on:
-#       - db
-
   maria_db:
     build: 
       context: ./requirements/maria_db
@@ -47,14 +37,35 @@ services:
       - maria_db
     networks:
       - inception
-    # volumes:
-    #   - db_data:/var/lib/mysql
-  
+    volumes:
+      - wordpress:/var/www/wordpress
+
+  nginx:
+
+    build:
+      context: ./requirements/nginx
+    ports:
+      - "8080:443"
+    env_file:
+      - .env
+    depends_on:
+      - wordpress
+    volumes:
+      - wordpress:/var/www/wordpress
+    networks:
+      - inception
 
 networks:
   inception:
     driver: bridge
     name: inception
 
-# volumes:
-#   db_data:
+volumes:
+  db_data:
+
+  wordpress:
+    driver: local
+    driver_opts:
+      device: /home/bedos-sa/wordpress
+      type: none
+      o: bind

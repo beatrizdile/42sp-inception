@@ -17,15 +17,18 @@ RUN apt update && \
 WORKDIR /var/www/wordpress
 
 RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
-    && chmod +x wp-cli.phar && mv wp-cli.phar /usr/local/bin/wp \
+	&& chmod +x wp-cli.phar && mv wp-cli.phar /usr/local/bin/wp \
 	&& wp core download --allow-root \
-	&& mkdir /run/php
+	&& mkdir /run/php \
+	&& chown -R www-data:www-data /run/php /var/log /var/www/wordpress
 
 	
-COPY ./conf/www.conf /etc/php/7.4/fpm/pool.d/www.conf
+RUN sed -i '0,/^listen/ s/^listen.*/listen = 0.0.0.0:9000/' /etc/php/7.4/fpm/pool.d/www.conf
 
-COPY ./conf/wp_conf.sh .
-RUN chmod +x wp_conf.sh
-	
+COPY ./conf/wp_conf.sh /var/www/wp_conf.sh
+
+RUN chmod +x /var/www/wp_conf.sh
+
 USER www-data
-CMD [ "./wp_conf.sh" ]
+
+CMD [ "/var/www/wp_conf.sh" ]

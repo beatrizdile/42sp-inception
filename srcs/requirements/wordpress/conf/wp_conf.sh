@@ -1,6 +1,6 @@
 #!/bin/bash
 
-rm -rf /var/www/wordpress/wp-config-sample.php
+sleep 5
 
 wp config create --allow-root \
 	--path=/var/www/wordpress \
@@ -25,5 +25,4 @@ wp user create --allow-root	\
 --user_pass=$WP_PASSWORD \
 --role='author'
 
-# exec php-fpm7.4 -F
-sleep infinity
+exec php-fpm7.4 -F
