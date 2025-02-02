@@ -26,6 +26,30 @@ services:
       - inception
     # volumes:
     #   - db_data:/var/lib/mysql
+  
+  wordpress:
+    build: 
+      context: ./requirements/wordpress
+      args:
+        - DOMAIN_NAME
+        - DATABASE_NAME
+        - DATABASE_USER
+        - DATABASE_USER_PASSWORD
+        - WP_ROOT_USER
+        - WP_ROOT_EMAIL
+        - WP_ROOT_PASSWORD
+        - WP_USER
+        - WP_EMAIL
+        - WP_PASSWORD
+    env_file:
+      - .env
+    depends_on:
+      - maria_db
+    networks:
+      - inception
+    # volumes:
+    #   - db_data:/var/lib/mysql
+  
 
 networks:
   inception:
