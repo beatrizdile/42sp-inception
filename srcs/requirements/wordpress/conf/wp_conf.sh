@@ -1,13 +1,13 @@
 #!/bin/bash
 
-sleep 5
+sleep 15
 
 wp config create --allow-root \
 	--path=/var/www/wordpress \
 	--dbname=$DATABASE_NAME \
 	--dbuser=$DATABASE_USER \
 	--dbpass=$DATABASE_USER_PASSWORD \
-	--dbhost="maria_db" \
+	--dbhost="mariadb" \
 	--dbprefix='wp_' \
 	--dbcharset="utf8"
 

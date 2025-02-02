@@ -1,5 +1,5 @@
 services:
-  maria_db:
+  mariadb:
     build: 
       context: ./requirements/maria_db
       args:
@@ -8,14 +8,14 @@ services:
         - DATABASE_USER_PASSWORD
         - DATABASE_ROOT
         - DATABASE_ROOT_PASSWORD
-    ports:
-      - "3316:3306"
     env_file:
       - .env
     networks:
       - inception
-    # volumes:
-    #   - db_data:/var/lib/mysql
+    volumes:
+      - maria_db:/var/lib/mysql
+    restart:
+      always
   
   wordpress:
     build: 
@@ -34,18 +34,19 @@ services:
     env_file:
       - .env
     depends_on:
-      - maria_db
+      - mariadb
     networks:
       - inception
     volumes:
       - wordpress:/var/www/wordpress
+    restart:
+      always
 
   nginx:
-
     build:
       context: ./requirements/nginx
     ports:
-      - "8080:443"
+      - "443:443"
     env_file:
       - .env
     depends_on:
@@ -54,6 +55,8 @@ services:
       - wordpress:/var/www/wordpress
     networks:
       - inception
+    restart:
+      always
 
 networks:
   inception:
@@ -61,11 +64,15 @@ networks:
     name: inception
 
 volumes:
-  db_data:
-
+  maria_db:
+    driver: local
+    driver_opts:
+      device: /home/bedos-sa/data/maria_db
+      type: none
+      o: bind
   wordpress:
     driver: local
     driver_opts:
-      device: /home/bedos-sa/wordpress
+      device: /home/bedos-sa/data/wordpress
       type: none
       o: bind

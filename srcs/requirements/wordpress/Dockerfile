@@ -16,6 +16,10 @@ RUN apt update && \
 
 WORKDIR /var/www/wordpress
 
+COPY ./conf/wp_conf.sh /var/www/wp_conf.sh
+
+RUN chmod +x /var/www/wp_conf.sh
+
 RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
 	&& chmod +x wp-cli.phar && mv wp-cli.phar /usr/local/bin/wp \
 	&& wp core download --allow-root \
@@ -24,10 +28,6 @@ RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.ph
 
 	
 RUN sed -i '0,/^listen/ s/^listen.*/listen = 0.0.0.0:9000/' /etc/php/7.4/fpm/pool.d/www.conf
-
-COPY ./conf/wp_conf.sh /var/www/wp_conf.sh
-
-RUN chmod +x /var/www/wp_conf.sh
 
 USER www-data
 
