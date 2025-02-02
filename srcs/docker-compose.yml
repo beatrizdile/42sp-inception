@@ -12,20 +12,25 @@ services:
   maria_db:
     build: 
       context: ./requirements/maria_db
-      # args:
-      #   - MARIADB_PASSWORD
+      args:
+        - DATABASE_NAME
+        - DATABASE_USER
+        - DATABASE_USER_PASSWORD
+        - DATABASE_ROOT
+        - DATABASE_ROOT_PASSWORD
     ports:
       - "3316:3306"
     env_file:
       - .env
-    environment:
-      DATABASE_NAME: ${DATABASE_NAME}
-      DATABASE_USER: ${DATABASE_USER}
-      DATABASE_USER_PASSWORD: ${DATABASE_USER_PASSWORD}
-      DATABASE_ROOT: ${DATABASE_ROOT}
-      DATABASE_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD}
+    networks:
+      - inception
     # volumes:
     #   - db_data:/var/lib/mysql
+
+networks:
+  inception:
+    driver: bridge
+    name: inception
 
 # volumes:
 #   db_data:
